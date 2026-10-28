@@ -1,0 +1,6 @@
+# dsh-thinking-zh bundle patch: inserts this plugin into a profile's layer stack.
+# The host half serves translation + diagnostics on the Web origin; the browser
+# half (declared by `dsh.client`) rewrites collapsed English reasoning previews.
+- insert:
+    - id: thinking-zh
+      name: 'dsh-thinking-zh'

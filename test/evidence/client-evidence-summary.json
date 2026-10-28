@@ -1,0 +1,32 @@
+{
+  "plugin": "dsh-thinking-zh",
+  "half": "client",
+  "src": "src/client.js",
+  "lib": "lib/client.js",
+  "bytes": 33393,
+  "sha256_src": "D90D97F2AE49D6EEC2D373DC6F459FE34FDE890A75DCDA80370F1FEE40C4E7AC",
+  "sha256_lib": "D90D97F2AE49D6EEC2D373DC6F459FE34FDE890A75DCDA80370F1FEE40C4E7AC",
+  "identical": true,
+  "selector": "div[data-variant=\"think\"][data-preview]:not([data-expanded]) [data-shimmer-decoration] + span",
+  "semantic_attributes": ["data-variant", "data-preview", "data-expanded", "data-shimmer-decoration", "data-streaming"],
+  "stability_ms": 400,
+  "max_segments_per_request": 8,
+  "warmup": "one tiny translate request on page load to warm host->Bing TLS",
+  "latency_ms": {
+    "exact_settle_to_chinese_after_warmup": [407, 410, 449],
+    "before_warmup": [890, 1037, 901],
+    "cold_tls_first_request": 896,
+    "warm_connection": [250, 310]
+  },
+  "console_issues": [],
+  "evidence": ["10-preview-chinese.png", "11-collapsed-chinese.png", "12-expanded.png", "verify-report.json"],
+  "sessions_created": [
+    "session-60ea29b5-8d39-4778-8c74-7d750e8061d5 17:00 workspace home",
+    "session-a2e515c4-a1d8-4c0d-9a32-0f178259a7aa 17:02 Boom_Birds",
+    "session-737c2d99-9dc8-45f5-89f9-f811acf36ee1 17:03 Boom_Birds",
+    "session-26264ad2-8a19-4f3d-9541-e519fb83644f 17:05 Boom_Birds",
+    "session-898eb56f-8d9b-47cd-83f6-4c8cf6e2516f 17:06 Boom_Birds",
+    "session-fba58e02-3a73-416f-bdd9-1213f2f21fbf 17:07 Boom_Birds"
+  ]
+}
+

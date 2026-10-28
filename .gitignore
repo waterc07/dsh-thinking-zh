@@ -1,0 +1,36 @@
+# Node dependencies (the plugin itself has none)
+node_modules/
+
+# Scratch $DSH_HOME used by the test harness
+test/.tmp-home/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files and editor/OS noise
+*.tmp
+*.tmp-*
+*.bak
+*.bak-*
+*.orig
+*.rej
+*.swp
+*~
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/
+.idea/
+
+# Local environment overrides
+.env
+.env.*
+
+# NOTE: `lib/` is intentionally NOT ignored — it is the loadable build output
+# referenced by package.json (`main`/`exports`/`files`) and shipped with the repo.
+# `test/evidence/` is intentionally NOT ignored — it is the committed proof of
+# the browser-half behaviour.

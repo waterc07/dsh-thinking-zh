@@ -1,0 +1,200 @@
+{
+  "summary": {
+    "suite": "host-functional",
+    "counts": {
+      "PASS": 30,
+      "FAIL": 0,
+      "NOTE": 1,
+      "ERROR": 0
+    },
+    "cases": [
+      {
+        "title": "real Bing: English preview -> Chinese, shape matches contract",
+        "status": "NOTE",
+        "detail": "SKIPPED: DSH_THINKING_ZH_OFFLINE=1 (live upstream not contacted)",
+        "ms": 0
+      },
+      {
+        "title": "repeated request hits cache (cached:true) with no second network hop",
+        "status": "PASS",
+        "detail": "calls=1 text=译文:Inspect the cache layer.",
+        "ms": 93
+      },
+      {
+        "title": "same text twice in one request => one upstream send, both filled",
+        "status": "PASS",
+        "detail": "calls=1",
+        "ms": 12
+      },
+      {
+        "title": "distinct texts are batched into one upstream request",
+        "status": "PASS",
+        "detail": "calls=1",
+        "ms": 11
+      },
+      {
+        "title": "targetLanguage override maps zh-TW -> zh-Hant for bing",
+        "status": "PASS",
+        "detail": "https://edge.microsoft.com/translate/translatetext?to=zh-Hant&isEnterpriseClient=false",
+        "ms": 9
+      },
+      {
+        "title": "empty segment: no upstream hop, text \"\" cached:true",
+        "status": "PASS",
+        "detail": "[{\"id\":\"e1\",\"text\":\"\",\"cached\":true},{\"id\":\"e2\",\"text\":\"\",\"cached\":true}]",
+        "ms": 7
+      },
+      {
+        "title": "more than 8 segments -> 400 and no upstream hop",
+        "status": "PASS",
+        "detail": "at most 8 segments per request",
+        "ms": 6
+      },
+      {
+        "title": "8 segments is accepted (boundary)",
+        "status": "PASS",
+        "detail": "ok",
+        "ms": 11
+      },
+      {
+        "title": "segment over 4000 chars -> 400",
+        "status": "PASS",
+        "detail": "segment big exceeds 4000 characters",
+        "ms": 6
+      },
+      {
+        "title": "exactly 4000 chars is accepted (boundary)",
+        "status": "PASS",
+        "detail": "ok",
+        "ms": 9
+      },
+      {
+        "title": "invalid payloads -> 400 (empty, missing, no id, non-object entry)",
+        "status": "PASS",
+        "detail": "missing segments=400, empty array=400, missing id=400, null entry=400, string segments=400",
+        "ms": 9
+      },
+      {
+        "title": "upstream HTTP 500 => 200 with per-segment {text:null,error}, no throw",
+        "status": "PASS",
+        "detail": "[{\"id\":\"a\",\"text\":null,\"error\":\"bing HTTP 500\"},{\"id\":\"b\",\"text\":null,\"error\":\"bing HTTP 500\"}]",
+        "ms": 8
+      },
+      {
+        "title": "malformed upstream payload => per-segment error, no throw",
+        "status": "PASS",
+        "detail": "{\"id\":\"a\",\"text\":null,\"error\":\"bing: segment 0 has no translation\"}",
+        "ms": 7
+      },
+      {
+        "title": "upstream timeout (~10s) => per-segment errors, response still 200",
+        "status": "PASS",
+        "detail": "elapsed=10013ms error=translation timeout",
+        "ms": 10017
+      },
+      {
+        "title": "enabled=false short-circuits translate (no upstream, empty results)",
+        "status": "PASS",
+        "detail": "{\"results\":[]}",
+        "ms": 13
+      },
+      {
+        "title": "two concurrent requests for the same uncached text",
+        "status": "PASS",
+        "detail": "{\"networkCalls\":2,\"firstCached\":false,\"secondCached\":false}",
+        "ms": 268
+      },
+      {
+        "title": "concurrent distinct texts are not serialized behind each other",
+        "status": "PASS",
+        "detail": "{\"elapsedMs\":266,\"networkCalls\":3}",
+        "ms": 278
+      },
+      {
+        "title": "cache survives a module reload (disk rebound)",
+        "status": "PASS",
+        "detail": "持久:Persist this translation.",
+        "ms": 17
+      },
+      {
+        "title": "cache file bounded to 5000 entries and keeps the newest",
+        "status": "PASS",
+        "detail": "entries=5000",
+        "ms": 61
+      },
+      {
+        "title": "cache writes are atomic: no leftover .tmp files",
+        "status": "PASS",
+        "detail": "cache.json",
+        "ms": 24
+      },
+      {
+        "title": "cache file holds no plaintext source English (hash keys + translated values)",
+        "status": "PASS",
+        "detail": "ok",
+        "ms": 9
+      },
+      {
+        "title": "GET /state returns contract shape with defaults",
+        "status": "PASS",
+        "detail": "{\"enabled\":true,\"targetLanguage\":\"zh-Hans\",\"provider\":\"bing\",\"rev\":1793170048094}",
+        "ms": 7
+      },
+      {
+        "title": "POST /set persists enabled + targetLanguage; ignores invalid provider",
+        "status": "PASS",
+        "detail": "{\"enabled\":false,\"targetLanguage\":\"zh-Hant\",\"provider\":\"bing\",\"rev\":1793170048115}",
+        "ms": 21
+      },
+      {
+        "title": "diag writes payload under $DSH_HOME/dsh-thinking-zh/diag and returns path",
+        "status": "PASS",
+        "detail": "preview-dom.json",
+        "ms": 21
+      },
+      {
+        "title": "method guard: wrong method -> 405",
+        "status": "PASS",
+        "detail": "GET translate=405 POST state=405",
+        "ms": 9
+      },
+      {
+        "title": "JSON parse failure status codes (translate vs set)",
+        "status": "PASS",
+        "detail": "{\"translate\":400,\"set\":400}",
+        "ms": 7
+      },
+      {
+        "title": ">256KB body is refused and the host stays alive",
+        "status": "PASS",
+        "detail": "{\"oversizeStatus\":0,\"reset\":true,\"error\":\"socket hang up\",\"after\":200}",
+        "ms": 14
+      },
+      {
+        "title": "client abort mid-body does not wedge later requests",
+        "status": "PASS",
+        "detail": "ok",
+        "ms": 169
+      },
+      {
+        "title": "apply() registers routes and disposer removes them",
+        "status": "PASS",
+        "detail": "/api/dsh-thinking-zh/diag,/api/dsh-thinking-zh/set,/api/dsh-thinking-zh/state,/api/dsh-thinking-zh/translate",
+        "ms": 4
+      },
+      {
+        "title": "apply() twice without dispose throws duplicate-route error",
+        "status": "PASS",
+        "detail": "{\"threw\":true,\"message\":\"duplicate exact route \\\"/api/dsh-thinking-zh/state\\\"\"}",
+        "ms": 2
+      },
+      {
+        "title": "unload clears the flush timer (no handle keeps the process alive)",
+        "status": "PASS",
+        "detail": "translateSegments ok (timer is unref()ed; no process hold)",
+        "ms": 7
+      }
+    ]
+  },
+  "uncaught": []
+}
