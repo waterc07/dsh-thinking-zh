@@ -7,12 +7,43 @@
  */
 import { readFile } from 'node:fs/promises'
 
+/**
+ * Parse an Electron ASAR header.
+ *
+ * Two layouts are supported:
+ *  - plain:  bytes 4..7 hold the header size and the header JSON starts at 8;
+ *  - Pickle-wrapped (e.g. the DSH 0.2.1-rc.3 desktop `app.asar`): an extra
+ *    8-byte Pickle prefix shifts the header JSON to 16, while the file data
+ *    still starts at `8 + headerSize`.
+ *
+ * @param buffer - whole archive contents.
+ */
 function parseArchive(buffer) {
-  const sizeBuf = buffer.subarray(0, 8)
-  const headerSize = sizeBuf.readUInt32LE(4)
-  const json = buffer.subarray(8, 8 + headerSize).toString('utf8')
-  const header = JSON.parse(json)
+  const jsonStart = buffer.subarray(0, 64).indexOf('{"files"')
+  if (jsonStart < 0) throw new Error('not an asar archive: header JSON not found in first 64 bytes')
+  const headerSize = buffer.readUInt32LE(4)
   const fileStart = 8 + headerSize
+  if (fileStart > buffer.length) throw new Error(`bad asar header size: ${headerSize}`)
+  const json = buffer
+    .subarray(jsonStart, fileStart)
+    .toString('utf8')
+    .replace(/[\u0000\s]+$/u, '')
+  let header
+  try {
+    header = JSON.parse(json)
+  } catch (error) {
+    // Tolerate trailing Pickle padding: shrink to the last complete JSON object.
+    let end = json.lastIndexOf('}')
+    while (end > 0) {
+      try {
+        header = JSON.parse(json.slice(0, end + 1))
+        break
+      } catch {
+        end = json.lastIndexOf('}', end - 1)
+      }
+    }
+    if (header === undefined) throw error
+  }
   return { header, fileStart, buffer }
 }
 
