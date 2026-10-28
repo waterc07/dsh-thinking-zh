@@ -12,13 +12,13 @@
         "title": "trust guard: Host header allow/deny matrix",
         "status": "PASS",
         "detail": "ipv4 loopback=200, localhost=200, foreign host=403, localhost lookalike=403, foreign host with port=403, DNS rebinding 127.0.0.1.nip.io (host+origin)=403, DNS rebinding 127.0.0.1.evil.example=403, DNS rebinding 127.1.2.3.nip.io=403, userinfo trick=403, missing Host on HTTP/1.0=403, missing Host on HTTP/1.1=400",
-        "ms": 66
+        "ms": 90
       },
       {
         "title": "trust guard: Origin matrix (same-origin allowed, cross-site rejected)",
         "status": "PASS",
         "detail": "same origin=200, cross-site origin=403, opaque origin (null)=403, same host other port=403, localhost other port=403, same host:port but https scheme=200, missing-origin=200, cross-site-form=403",
-        "ms": 19
+        "ms": 13
       },
       {
         "title": "trust guard: non-loopback TCP peer is refused even with loopback Host/Origin/XFF",
@@ -30,97 +30,97 @@
         "title": "trust guard: IPv6 ::1 loopback accepted",
         "status": "PASS",
         "detail": "status=200",
-        "ms": 5
+        "ms": 7
       },
       {
         "title": "diag: traversal / absolute / device names stay inside diag dir",
         "status": "PASS",
         "detail": "11 files; \"../../evil\" -> .._.._evil.json | \"..\\\\..\\\\evil\" -> .._.._evil.json | \"/absolute/evil\" -> _absolute_evil.json | \"C:\\\\Windows\\\\evil\" -> C__Windows_evil.json | \"..\" -> ...json | \".\" -> ..json | \"a/b\" -> a_b.json | \"%2e%2e%2f%2e%2e%2fevil\" -> _2e_2e_2f_2e_2e_2fevil.json | \"..\\\\..\\\\..\\\\..\\\\Windows\\\\Syst\" -> .._.._.._.._Windows_System32_drivers_etc_hosts.json | \"中文名\" -> ___.json | \"xxxxxxxxxx…",
-        "ms": 55
+        "ms": 50
       },
       {
         "title": "diag: file count capped at 60 with oldest pruned",
         "status": "PASS",
         "detail": "{\"files\":60,\"approxBytes\":63535}",
-        "ms": 1025
+        "ms": 1004
       },
       {
         "title": "diag: payload cap 512KB is unreachable because the body cap is 256KB",
         "status": "PASS",
         "detail": "{\"fitsStatus\":200,\"fitsBytes\":256020,\"oversizeStatus\":0,\"oversizeReset\":true,\"oversizeError\":\"socket hang up\"}",
-        "ms": 16
+        "ms": 47
       },
       {
         "title": "diag: file mode requested 0o600 (POSIX bits on Windows)",
         "status": "PASS",
-        "detail": "{\"path\":\"$PLUGIN_DIR\\\\test\\\\.tmp-home\\\\diag-mode-1793170049706-8\\\\dsh-thinking-zh\\\\diag\\\\mode-probe.json\",\"mode\":\"0o100666\",\"note\":\"Windows ignores POSIX mode bits; ACL inherits from %TEMP%\"}",
+        "detail": "{\"path\":\"$DSH_HOME\\\\diag-mode-1793195023606-8\\\\dsh-thinking-zh\\\\diag\\\\mode-probe.json\",\"mode\":\"0o100666\",\"note\":\"Windows ignores POSIX mode bits; ACL inherits from %TEMP%\"}",
         "ms": 8
       },
       {
         "title": "readBody: malformed JSON -> 400 on translate/set/diag; no crash, host alive",
         "status": "PASS",
         "detail": "{\"translate\":400,\"set\":400,\"diag\":400,\"after\":200}",
-        "ms": 8
+        "ms": 9
       },
       {
         "title": "readBody: 257KB body -> connection reset, host survives, no uncaught exception",
         "status": "PASS",
-        "detail": "{\"status\":0,\"reset\":true,\"error\":\"socket hang up\",\"after\":200,\"issues\":[]}",
-        "ms": 9
+        "detail": "{\"status\":0,\"reset\":true,\"error\":\"read ECONNRESET\",\"after\":200,\"issues\":[]}",
+        "ms": 13
       },
       {
         "title": "readBody: slow/aborted upload cannot wedge the route table",
         "status": "PASS",
         "detail": "ok",
-        "ms": 69
+        "ms": 79
       },
       {
         "title": "translate never lets client steer the upstream URL (no SSRF)",
         "status": "PASS",
         "detail": "{\"calls\":4,\"urls\":[\"zh-hans&url=http://169.254.169.254/latest/meta-data\",\"../../../../etc/passwd\",\"zh-hans#@evil.example\",\"javascript:alert(1)\"]}",
-        "ms": 18
+        "ms": 16
       },
       {
         "title": "responses carry no CORS opt-in (cross-origin JS cannot read them)",
         "status": "PASS",
         "detail": "{\"status\":200,\"cacheControl\":\"no-store\",\"referrerPolicy\":\"no-referrer\",\"contentType\":\"application/json; charset=utf-8\",\"hasAcao\":false}",
-        "ms": 6
+        "ms": 5
       },
       {
         "title": "durable state/cache file permissions and contents (no secrets)",
         "status": "PASS",
-        "detail": "{\"dir\":\"$PLUGIN_DIR\\\\test\\\\.tmp-home\\\\files-mode-1793170049825-14\\\\dsh-thinking-zh\",\"stateMode\":\"0o100666\",\"cacheMode\":\"0o100666\",\"stateContent\":\"{\\n  \\\"enabled\\\": true,\\n  \\\"targetLanguage\\\": \\\"zh-Hans\\\",\\n  \\\"provider\\\": \\\"bing\\\",\\n  \\\"rev\\\": 1793170049831\\n}\",\"cacheHasSourceEnglish\":false,\"cacheKeysHashed\":true}",
-        "ms": 15
+        "detail": "{\"dir\":\"$DSH_HOME\\\\files-mode-1793195023736-14\\\\dsh-thinking-zh\",\"stateMode\":\"0o100666\",\"cacheMode\":\"0o100666\",\"stateContent\":\"{\\n  \\\"enabled\\\": true,\\n  \\\"targetLanguage\\\": \\\"zh-Hans\\\",\\n  \\\"provider\\\": \\\"bing\\\",\\n  \\\"rev\\\": 1793195023740\\n}\",\"cacheHasSourceEnglish\":false,\"cacheKeysHashed\":true}",
+        "ms": 17
       },
       {
         "title": "/set failure: 400 and in-memory state NOT mutated (write-then-adopt)",
         "status": "PASS",
-        "detail": "{\"statusBefore\":true,\"setStatus\":400,\"setError\":\"ENOTDIR: not a directory, mkdir '$PLUGIN_DIR\\\\test\\\\.tmp-home\\\\blocker-1793170049840.file'\",\"statusAfter\":true}",
-        "ms": 8
+        "detail": "{\"statusBefore\":true,\"setStatus\":400,\"setError\":\"ENOTDIR: not a directory, mkdir '$DSH_HOME\\\\blocker-1793195023753.file'\",\"statusAfter\":true}",
+        "ms": 6
       },
       {
         "title": "oversized/forged cache.json degrades to empty cache instead of failing routes",
         "status": "PASS",
         "detail": "ok",
-        "ms": 16
+        "ms": 12
       },
       {
         "title": "concurrent flushes: no translation is lost from disk cache",
         "status": "PASS",
         "detail": "{\"entries\":50,\"lost\":0}",
-        "ms": 2593
+        "ms": 2574
       },
       {
         "title": "unload: debounce timer state survives dispose (reload regression probe)",
         "status": "PASS",
         "detail": "{\"beforeUnload\":1,\"afterUnload\":0}",
-        "ms": 9
+        "ms": 5
       },
       {
         "title": "unload: pending dirty cache is not flushed on dispose",
         "status": "PASS",
         "detail": "{\"cacheExists\":true,\"entries\":1}",
-        "ms": 2617
+        "ms": 2605
       }
     ]
   },
